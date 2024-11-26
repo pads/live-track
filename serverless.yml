@@ -1,0 +1,11 @@
+org: essexpads
+service: live-track
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  inbound:
+    handler: inbound.exec
+    url: true
