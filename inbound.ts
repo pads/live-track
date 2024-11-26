@@ -7,7 +7,7 @@ import {
 
 export const exec: LambdaFunctionURLHandler = async (event) => {
   const token: string | undefined = (event.headers.authorization || "").split(
-    " ",
+    " "
   )[1];
 
   const secretsManager = new SecretsManagerClient({
@@ -16,7 +16,7 @@ export const exec: LambdaFunctionURLHandler = async (event) => {
   const response = await secretsManager.send(
     new GetSecretValueCommand({
       SecretId: "VONAGE_API_SIGNATURE_SECRET",
-    }),
+    })
   );
   const secret = response.SecretString;
 
