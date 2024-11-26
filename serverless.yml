@@ -4,6 +4,12 @@ service: live-track
 provider:
   name: aws
   runtime: nodejs20.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "secretsmanager:GetSecretValue"
+          Resource: "*"
 
 functions:
   inbound:

@@ -10,5 +10,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.146"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.699.0",
+    "@vonage/jwt": "^1.11.0"
   }
 }
