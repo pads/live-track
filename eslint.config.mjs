@@ -5,6 +5,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+  { ignores: [".serverless/*"] },
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
