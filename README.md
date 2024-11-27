@@ -1,5 +1,8 @@
 # Live Track
 
+![CI workflow](https://github.com/pads/live-track/actions/workflows/ci.yml/badge.svg)
+![CD workflow](https://github.com/pads/live-track/actions/workflows/cd.yml/badge.svg)
+
 A Lambda function that extracts a Strava live track URL via SMS for automatic publishing on a website.
 
 ## Usage
