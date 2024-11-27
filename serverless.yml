@@ -10,8 +10,90 @@ provider:
         - Effect: Allow
           Action: "secretsmanager:GetSecretValue"
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource:
+            - "arn:aws:s3:::${file(./config.json):bucket}"
+            - "arn:aws:s3:::${file(./config.json):bucket}/*"
 
 functions:
   inbound:
     handler: inbound.exec
     url: true
+
+resources:
+  Resources:
+    s3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${file(./config.json):bucket}
+        VersioningConfiguration:
+          Status: Enabled
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ["*"]
+              AllowedMethods: [GET, PUT]
+              AllowedOrigins: ["*"]
+              Id: CORSRule
+              MaxAge: "3600"
+    s3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      DependsOn:
+        - s3Bucket
+        - cloudfrontDistribution
+      Properties:
+        Bucket: ${file(./config.json):bucket}
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: "arn:aws:s3:::${file(./config.json):bucket}/*"
+            Principal:
+              Service: "cloudfront.amazonaws.com"
+            Condition:
+              StringEquals:
+                "AWS:SourceArn": !Sub arn:aws:cloudfront::${aws:accountId}:distribution/${cloudfrontDistribution.Id}
+    cloudfrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      DependsOn:
+        - cloudfrontAccessControl
+        - s3Bucket
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          Comment: "${sls:stage}-${self:service}"
+          PriceClass: PriceClass_100
+          HttpVersion: http2
+          IPV6Enabled: true
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+          Origins:
+            - DomainName: ${file(./config.json):bucket}.s3.amazonaws.com
+              Id: S3Origin
+              OriginAccessControlId: !Ref cloudfrontAccessControl
+              S3OriginConfig: {}
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            ForwardedValues:
+              QueryString: "true"
+              Cookies:
+                Forward: none
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+    cloudfrontAccessControl:
+      Type: AWS::CloudFront::OriginAccessControl
+      Properties:
+        OriginAccessControlConfig:
+          Name: CloudFrontOAC
+          OriginAccessControlOriginType: s3
+          SigningBehavior: always
+          SigningProtocol: sigv4
