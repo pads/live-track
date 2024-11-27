@@ -4,7 +4,6 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from "@aws-sdk/client-secrets-manager";
-import { InboundMessage } from "./types";
 import { parse } from "./parser";
 
 const secretsManager = new SecretsManagerClient({
