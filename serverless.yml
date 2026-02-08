@@ -124,5 +124,6 @@ resources:
         EvaluationPeriods: 1
         Threshold: 1
         ComparisonOperator: GreaterThanOrEqualToThreshold
+        TreatMissingData: notBreaching
         AlarmActions:
           - !Ref lambdaErrorAlarmTopic
