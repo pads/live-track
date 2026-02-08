@@ -24,7 +24,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: serverless deploy
-        uses: serverless/github-action@v3.2
+        uses: serverless/github-action@f5f0c17d6ef97718c03f2c0a87c5d9b0bacbb1d8
         with:
           args: deploy
         env:
