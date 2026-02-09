@@ -6,6 +6,7 @@ export const parse = (payload: string | undefined): string | undefined => {
   }
 
   const parsedPayload: InboundMessage = JSON.parse(payload);
+  console.log("Parsed payload", parsedPayload);
   const matches = parsedPayload.text.match(/(^https.*)\n/);
   if (!matches) {
     throw new Error("URL not found");
