@@ -26,6 +26,11 @@ functions:
 
 resources:
   Resources:
+    InboundLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${sls:stage}-inbound
+        RetentionInDays: 3
     s3Bucket:
       Type: AWS::S3::Bucket
       Properties:
